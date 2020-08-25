@@ -49,10 +49,11 @@ function authUser(req, res, next) {
 		const token = req.body._token || req.query._token
 		if (token) {
 			// ### BUG #6 - Verify against Secret ###
-			// let payload = jwt.decode(token); //<-- old code
-			// req.curr_username = payload.username; //<-- old code
-			// req.curr_admin = payload.admin; //<-- old code
+			// let payload = jwt.decode(token) //<-- old code
+			// req.curr_username = payload.username //<-- old code
+			// req.curr_admin = payload.admin //<-- old code
 
+			// REPLACED CODE BELOW!
 			let payload = jwt.verify(token, SECRET_KEY)
 			req.curr_username = payload.username
 			req.curr_admin = payload.admin

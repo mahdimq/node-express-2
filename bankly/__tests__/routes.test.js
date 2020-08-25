@@ -113,13 +113,15 @@ describe('GET /users/[username]', function () {
 			phone: 'phone1'
 		})
 	})
-	// ADDED TEST IF TOKEN IS INVALID
+
+	// ### TEST BUG 6: This FAILS because JWT token not verified!
 	test('should deny access if no token provided', async function () {
 		const response = await request(app).get('/users/u1').send({ _token: 'invalid' })
 
-		expect(response.body.message).toBe('jwt malformed')
 		expect(response.statusCode).toBe(401)
+		expect(response.body.message).toBe('jwt malformed')
 	})
+	// ################
 })
 
 describe('PATCH /users/[username]', function () {
@@ -160,6 +162,19 @@ describe('PATCH /users/[username]', function () {
 			.send({ _token: tokens.u3, first_name: 'new-fn' }) // u3 is admin
 		expect(response.statusCode).toBe(404)
 	})
+
+	// ### TESTS BUG 5: This FAILS if user is authorized but not admin
+	test("Updates a single a user's not admin", async function () {
+		const response = await request(app)
+			.patch(`/users/u1`)
+			.send({ _token: tokens.u1, first_name: 'newFirstName', last_name: 'newLastName' })
+		const user = response.body.user
+
+		expect(user).toHaveProperty('username')
+		expect(user.first_name).toBe('newFirstName')
+		expect(user.username).not.toBe(null)
+	})
+	// ################
 })
 
 describe('DELETE /users/[username]', function () {

@@ -60,7 +60,9 @@ router.get('/:username', authUser, requireLogin, async function (req, res, next)
  */
 
 //  ### BUG 5: require admin stop regular users to update info
-// router.patch('/:username', authUser, requireLogin, requireAdmin, async function( //<-- old code
+// OLD CODE (Commented out)
+// router.patch('/:username', authUser, requireLogin, requireAdmin, async function (req, res, next) {
+// REPLACED CODE BELOW!
 router.patch('/:username', authUser, requireLogin, async function (req, res, next) {
 	try {
 		// Added conditional to stop non-logged in
